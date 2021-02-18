@@ -3,8 +3,6 @@ version: "3.7"
 services:
   db:
     image: postgres:11.0-alpine
-    volumes:
-      - postgres:/var/lib/postgresql/data:cached
     ports:
       - "5432:5432"
     environment:
@@ -15,7 +13,7 @@ services:
       TZ: Asia/Tokyo
   app:
     build: .
-    command: ash -c "rm -f tmp/pids/server.pid && ./bin/rails s -p 3000 -b '0.0.0.0'"
+    command: ash -c "rm -f tmp/pids/server.pid && ./bin/rails db:create && ./bin/rails db:migrate && ./bin/rails s -p 3000 -b '0.0.0.0'"
     volumes:
       - .:/myapp:cached
       - rails_cache:/myapp/tmp/cache
@@ -57,5 +55,4 @@ services:
 volumes:
   rails_cache:
   node_modules:
-  postgres:
   bundle:
